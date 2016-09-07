@@ -9,18 +9,18 @@ const externals = {
     commonjs: 'react',
     amd: 'react'
   },
+  'react-dom': {
+    root: 'ReactDOM',
+    commonjs2: 'react-dom',
+    commonjs: 'react-dom',
+    amd: 'react-dom'
+  },
   'react-motion': {
     root: 'ReactMotion',
     commonjs2: 'react-motion',
     commonjs: 'react-motion',
     amd: 'react-motion'
-  },
-  'react-measure': {
-    root: 'Measure',
-    commonjs2: 'react-measure',
-    commonjs: 'react-measure',
-    amd: 'react-measure'
-  },
+  }
 };
 
 var config = {
@@ -55,7 +55,7 @@ if (TARGET === 'minify') {
       warnings: false
     },
     mangle: {
-      except: ['React', 'ReactDOM', 'ReactPaperRipple', 'ReactMotion']
+      except: ['React', 'ReactDOM', 'ReactMotion', 'ReactPaperRipple']
     }
   }));
 }
