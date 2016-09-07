@@ -69,17 +69,19 @@ class PaperRipple extends Component {
 
   _addWave = (e) => {
     // bail out if a wave was already added
-    if (this._isDown) return;
+    if (this._waveAdded) return;
 
     e.stopPropagation();
     e.preventDefault();
 
     const { growRatio, center, color, rmConfig } = this.props
     const { pageX, pageY } = e.touches && e.touches[0] || e
-    const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = this._node
     const key = Date.now().toString()
     const waves = [...this.state.waves]
-    const size = Math.max(offsetWidth, offsetHeight) * growRatio
+    const rect = this._node.getBoundingClientRect()
+	  const offsetTop = rect.top + window.pageYOffset
+	  const offsetLeft = rect.left + window.pageXOffset
+    const size = Math.max(rect.width, rect.height) * growRatio
     const halfSize = (size / 2)
     const data = {
       width: size,
@@ -89,12 +91,12 @@ class PaperRipple extends Component {
       position: 'absolute'
     }
 
-    this._isDown = true
+    this._waveAdded = true
     this._currentKey = key
 
     if (center) {
-			data.top = offsetHeight / 2
-      data.left = offsetWidth / 2
+			data.top = rect.height / 2
+      data.left = rect.width / 2
       data.marginTop = -halfSize
       data.marginLeft = -halfSize
     } else {
@@ -115,13 +117,13 @@ class PaperRipple extends Component {
   }
 
   _removeWave = () => {
-    if (this._isDown) {
+    if (this._waveAdded) {
       this.setState({
         waves: this.state.waves.filter(wave =>
           wave.key !== this._currentKey
         )
       })
-      this._isDown = false
+      this._waveAdded = false
     }
   }
 
