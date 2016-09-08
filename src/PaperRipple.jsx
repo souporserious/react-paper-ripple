@@ -28,7 +28,7 @@ class PaperRipple extends Component {
   static defaultProps = {
     tag: 'div',
     center: false,
-    color: '#03c8f5',
+    color: '#fff',
     opacity: 0.25,
     growRatio: 2.25,
     rmConfig: { stiffness: 18, damping: 6 }
@@ -70,9 +70,6 @@ class PaperRipple extends Component {
   _addWave = (e) => {
     // bail out if a wave was already added
     if (this._waveAdded) return;
-
-    e.stopPropagation();
-    e.preventDefault();
 
     const { growRatio, center, color, rmConfig } = this.props
     const { pageX, pageY } = e.touches && e.touches[0] || e
@@ -137,7 +134,7 @@ class PaperRipple extends Component {
           willEnter={this._willEnter}
           willLeave={this._willLeave}
         >
-          {(interpolatedWaves) =>
+          {interpolatedWaves =>
             <div
               style={{
                 position: 'absolute',

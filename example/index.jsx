@@ -46,7 +46,13 @@ class App extends Component {
 
         <h2>Image</h2>
         <section>
-          <PaperRipple color="#fff" style={{ position: 'relative' }}>
+          <PaperRipple
+            color="#fff"
+            style={{
+              position: 'relative',
+              WebkitUserSelect: 'none'
+            }}
+          >
             <img src="https://unsplash.it/400/200"/>
           </PaperRipple>
         </section>
