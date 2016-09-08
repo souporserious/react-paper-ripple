@@ -5,7 +5,7 @@ import getPublicProps from './get-public-props'
 
 const Wave = ({ data, style: { scale, opacity } }) => (
   <div
-    className="react-wave"
+    className="paper-ripple-wave"
     style={{
       ...data,
       WebkitTransform: `scale(${scale}, ${scale})`,
@@ -145,7 +145,7 @@ class PaperRipple extends Component {
                 overflow: 'hidden',
                 opacity
               }}
-              className="react-ripple"
+              className="paper-ripple"
               onMouseDown={this._addWave}
               onTouchStart={this._addWave}
             >
