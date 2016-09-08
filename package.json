@@ -1,6 +1,6 @@
 {
   "name": "react-paper-ripple",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Paper ripple animations inspired by Google Material Design.",
   "main": "lib/react-paper-ripple.js",
   "files": ["dist", "lib"],
