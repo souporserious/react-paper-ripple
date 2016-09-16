@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM, { findDOMNode } from 'react-dom'
 import { TransitionMotion, spring, presets } from 'react-motion'
-import getPublicProps from './get-public-props'
 
 const Wave = ({ data, style: { scale, opacity } }) => (
   <div
@@ -14,6 +13,11 @@ const Wave = ({ data, style: { scale, opacity } }) => (
     }}
   />
 )
+
+const eventTypes = {
+  mousedown: 'MouseDown',
+  touchstart: 'touchStart'
+}
 
 class PaperRipple extends Component {
   static propTypes = {
@@ -124,10 +128,25 @@ class PaperRipple extends Component {
     }
   }
 
+  _handleEvent = (e) => {
+    const eventType = eventTypes[e.type]
+    const propEvent = this.props[`on${eventType}`]
+
+    this._addWave(e)
+
+    if (typeof propEvent === 'function') {
+      propEvent(e)
+    }
+  }
+
   render() {
     const { tag, center, color, growRatio, opacity, rmConfig, children, ...restProps } = this.props
     return (
-      <this.props.tag {...restProps}>
+      <this.props.tag
+        {...restProps}
+        onMouseDown={this._handleEvent}
+        onTouchStart={this._handleEvent}
+      >
         {children}
         <TransitionMotion
           styles={this.state.waves}
@@ -143,11 +162,10 @@ class PaperRipple extends Component {
                 bottom: 0,
                 left: 0,
                 overflow: 'hidden',
+                pointerEvents: 'none',
                 opacity
               }}
               className="paper-ripple"
-              onMouseDown={this._addWave}
-              onTouchStart={this._addWave}
             >
               {interpolatedWaves.map(config =>
                 <Wave {...config}/>
