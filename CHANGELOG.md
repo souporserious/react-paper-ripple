@@ -1,4 +1,9 @@
 ## CHANGELOG
+### 0.2.1
+Add events to the main element so events don't get captured by the waves container
+
+Removed unused code
+
 ### 0.2.0
 Use `getBoundingClientRect` for offset calculation
 
