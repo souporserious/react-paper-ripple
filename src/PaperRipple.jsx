@@ -27,7 +27,7 @@ class PaperRipple extends Component {
     color: PropTypes.string,
     opacity: PropTypes.number,
     growRatio: PropTypes.number,
-    rmConfig: React.PropTypes.objectOf(React.PropTypes.number)
+    rmConfig: PropTypes.objectOf(PropTypes.number)
   }
 
   static defaultProps = {
