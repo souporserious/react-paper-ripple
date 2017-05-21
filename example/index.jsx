@@ -10,7 +10,10 @@ class App extends Component {
       <div>
         <h1>
           React Paper Ripple
-          <PaperRipple color="#ffeee5" />
+          <PaperRipple
+            color="#ffeee5"
+            rmConfig={{ stiffness: 18, damping: 6 }}
+          />
         </h1>
 
         <h2>Buttons</h2>
