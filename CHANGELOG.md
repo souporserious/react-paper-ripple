@@ -8,6 +8,25 @@ Use `ref` instead of `findDOMNode`
 
 Added `react-document-events` 🎉
 
+***API changes***
+
+Before:
+
+```js
+<PaperRipple tag="h1" color="#ffeee5">
+  React Paper Ripple
+</h1>
+```
+
+After:
+
+```js
+<h1>
+  React Paper Ripple
+  <PaperRipple color="#ffeee5"/>
+</h1>
+```
+
 ### 0.2.1
 Add events to the main element so events don't get captured by the waves container
 
