@@ -1,4 +1,13 @@
 ## CHANGELOG
+### 0.3.0
+Use `prop-types` library because `React.PropTypes` is deprecated as of React v15.5 [#2](https://github.com/souporserious/react-paper-ripple/pull/2)
+
+Upgrade `react-motion` to `0.5.0`
+
+Use `ref` instead of `findDOMNode`
+
+Added `react-document-events` 🎉
+
 ### 0.2.1
 Add events to the main element so events don't get captured by the waves container
 

@@ -1,66 +1,65 @@
 import React, { Component } from 'react'
-import ReactDOM, { findDOMNode } from 'react-dom'
+import PropTypes from 'prop-types'
+import DocumentEvents from 'react-document-events'
 import { TransitionMotion, spring, presets } from 'react-motion'
-import PropTypes from 'prop-types';
-
-const Wave = ({ data, style: { scale, opacity } }) => (
-  <div
-    className="paper-ripple-wave"
-    style={{
-      ...data,
-      WebkitTransform: `scale(${scale}, ${scale})`,
-      transform: `scale3d(${scale}, ${scale}, 1)`,
-      opacity
-    }}
-  />
-)
 
 const eventTypes = {
   mousedown: 'MouseDown',
-  touchstart: 'touchStart'
+  touchstart: 'touchStart',
+}
+
+const waveContainerStyles = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  overflow: 'hidden',
+}
+
+function preventDefault(e) {
+  e.preventDefault()
+}
+
+function Wave({ data, style: { scale, opacity } }) {
+  return (
+    <div
+      className="paper-ripple-wave"
+      style={{
+        ...data,
+        WebkitTransform: `scale(${scale}, ${scale})`,
+        transform: `scale3d(${scale}, ${scale}, 1)`,
+        opacity,
+      }}
+    />
+  )
 }
 
 class PaperRipple extends Component {
   static propTypes = {
-    tag: PropTypes.string,
     center: PropTypes.bool,
     color: PropTypes.string,
     opacity: PropTypes.number,
     growRatio: PropTypes.number,
-    rmConfig: PropTypes.objectOf(PropTypes.number)
+    rmConfig: PropTypes.objectOf(PropTypes.number),
   }
 
   static defaultProps = {
-    tag: 'div',
     center: false,
     color: '#fff',
     opacity: 0.25,
     growRatio: 2.25,
-    rmConfig: { stiffness: 18, damping: 6 }
+    rmConfig: { stiffness: 100, damping: 20 },
   }
 
   state = {
-    waves: []
-  }
-
-  componentDidMount() {
-    this._node = findDOMNode(this)
-
-    document.addEventListener('mouseup', this._removeWave)
-    document.addEventListener('touchend', this._removeWave)
-    document.addEventListener('touchcancel', this._removeWave)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mouseup', this._removeWave)
-    document.removeEventListener('touchend', this._removeWave)
-    document.removeEventListener('touchcancel', this._removeWave)
+    waves: [],
   }
 
   _willEnter() {
     return {
       scale: 0,
-      opacity: 1
+      opacity: 1,
     }
   }
 
@@ -68,42 +67,42 @@ class PaperRipple extends Component {
     const { rmConfig } = this.props
     return {
       scale: spring(1, rmConfig),
-      opacity: spring(0, rmConfig)
+      opacity: spring(0, rmConfig),
     }
   }
 
-  _addWave = (e) => {
-    // bail out if a wave was already added
-    if (this._waveAdded) return;
+  _addWave = e => {
+    if (this._waveAdded) return
 
     const { growRatio, center, color, rmConfig } = this.props
-    const { pageX, pageY } = e.touches && e.touches[0] || e
+    const { pageX, pageY } = (e.touches && e.touches[0]) || e
     const key = Date.now().toString()
     const waves = [...this.state.waves]
-    const rect = this._node.getBoundingClientRect()
-	  const offsetTop = rect.top + window.pageYOffset
-	  const offsetLeft = rect.left + window.pageXOffset
+    const rect = this._parentNode.getBoundingClientRect()
+    const offsetTop = rect.top + (window ? window.pageYOffset : 0)
+    const offsetLeft = rect.left + (window ? window.pageXOffset : 0)
     const size = Math.max(rect.width, rect.height) * growRatio
-    const halfSize = (size / 2)
+    const halfSize = size / 2
     const data = {
       width: size,
       height: size,
-      background: color,
+      backgroundColor: color,
       borderRadius: '100%',
-      position: 'absolute'
+      position: 'absolute',
+      pointerEvents: 'none',
     }
 
     this._waveAdded = true
     this._currentKey = key
 
     if (center) {
-			data.top = rect.height / 2
+      data.top = rect.height / 2
       data.left = rect.width / 2
       data.marginTop = -halfSize
       data.marginLeft = -halfSize
     } else {
-      data.top = (pageY - offsetTop) - halfSize
-      data.left = (pageX - offsetLeft) - halfSize
+      data.top = pageY - offsetTop - halfSize
+      data.left = pageX - offsetLeft - halfSize
     }
 
     waves.push({
@@ -111,8 +110,8 @@ class PaperRipple extends Component {
       data,
       style: {
         scale: spring(1, rmConfig),
-        opacity: spring(1, rmConfig)
-      }
+        opacity: spring(1, rmConfig),
+      },
     })
 
     this.setState({ waves })
@@ -121,15 +120,13 @@ class PaperRipple extends Component {
   _removeWave = () => {
     if (this._waveAdded) {
       this.setState({
-        waves: this.state.waves.filter(wave =>
-          wave.key !== this._currentKey
-        )
+        waves: this.state.waves.filter(wave => wave.key !== this._currentKey),
       })
       this._waveAdded = false
     }
   }
 
-  _handleEvent = (e) => {
+  _handleEvent = e => {
     const eventType = eventTypes[e.type]
     const propEvent = this.props[`on${eventType}`]
 
@@ -140,41 +137,44 @@ class PaperRipple extends Component {
     }
   }
 
+  _handleRef = node => {
+    this._parentNode = node.parentNode
+  }
+
   render() {
-    const { tag, center, color, growRatio, opacity, rmConfig, children, ...restProps } = this.props
+    const {
+      center,
+      color,
+      growRatio,
+      opacity,
+      rmConfig,
+      ...restProps
+    } = this.props
+
     return (
-      <this.props.tag
-        {...restProps}
-        onMouseDown={this._handleEvent}
-        onTouchStart={this._handleEvent}
+      <TransitionMotion
+        styles={this.state.waves}
+        willEnter={this._willEnter}
+        willLeave={this._willLeave}
       >
-        {children}
-        <TransitionMotion
-          styles={this.state.waves}
-          willEnter={this._willEnter}
-          willLeave={this._willLeave}
-        >
-          {interpolatedWaves =>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                overflow: 'hidden',
-                pointerEvents: 'none',
-                opacity
-              }}
-              className="paper-ripple"
-            >
-              {interpolatedWaves.map(config =>
-                <Wave {...config}/>
-              )}
-            </div>
-          }
-        </TransitionMotion>
-      </this.props.tag>
+        {interpolatedWaves => (
+          <div
+            ref={this._handleRef}
+            className="paper-ripple"
+            style={{ ...waveContainerStyles, opacity }}
+            onMouseDown={this._handleEvent}
+            onTouchStart={this._handleEvent}
+            {...restProps}
+          >
+            {interpolatedWaves.map(config => <Wave {...config} />)}
+            <DocumentEvents
+              onMouseup={this._removeWave}
+              onTouchEnd={this._removeWave}
+              onTouchCancel={this._removeWave}
+            />
+          </div>
+        )}
+      </TransitionMotion>
     )
   }
 }
