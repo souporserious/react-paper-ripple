@@ -3,7 +3,10 @@
   "version": "0.2.1",
   "description": "Paper ripple animations inspired by Google Material Design.",
   "main": "lib/react-paper-ripple.js",
-  "files": ["dist", "lib"],
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "build": "npm run build:lib && NODE_ENV=production webpack --config webpack.prod.config.js",
     "build:lib": "babel src --out-dir lib --stage 0",
@@ -39,6 +42,7 @@
     "react-dom": "0.14.x || ^15.0.0"
   },
   "dependencies": {
+    "prop-types": "^15.5.10",
     "react-motion": "^0.4.4"
   },
   "devDependencies": {

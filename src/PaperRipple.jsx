@@ -1,6 +1,7 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import ReactDOM, { findDOMNode } from 'react-dom'
 import { TransitionMotion, spring, presets } from 'react-motion'
+import PropTypes from 'prop-types';
 
 const Wave = ({ data, style: { scale, opacity } }) => (
   <div
@@ -26,7 +27,7 @@ class PaperRipple extends Component {
     color: PropTypes.string,
     opacity: PropTypes.number,
     growRatio: PropTypes.number,
-    rmConfig: React.PropTypes.objectOf(React.PropTypes.number)
+    rmConfig: PropTypes.objectOf(PropTypes.number)
   }
 
   static defaultProps = {
